@@ -53,4 +53,4 @@ Coming soon...
 
 ## 👨‍💻 Author
 
-Developed by Stark
+Developed by Shabaz(Stark)
