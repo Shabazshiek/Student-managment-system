@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 EduTrack — Student Management System
 
 A full-stack Django web application for managing student records, attendance, marks, departments, and reports.
@@ -171,3 +172,61 @@ Then: `pip install psycopg2-binary`
 | `/reports/` | Reports |
 | `/reports/export/` | CSV export |
 | `/admin/` | Django Admin |
+=======
+# Student-managment-system
+A full-stack Django-based Student Management System with authentication, dashboard, and real-time data management features. Designed for efficient student, attendance, and academic record handling.
+
+# 🎓 Student Management System
+
+A full-stack web application built using Django that allows efficient management of student records, attendance, marks, and academic data through a clean and interactive dashboard.
+
+## 🚀 Features
+
+* 🔐 User Authentication (Login/Logout)
+* 📊 Admin Dashboard
+* 👨‍🎓 Student Management (Add, Update, Delete)
+* 🏫 Department & Subject Management
+* 📅 Attendance Tracking
+* 📝 Marks & Reports System
+* 📁 Organized Database Structure
+
+## 🛠️ Tech Stack
+
+* Backend: Django (Python)
+* Frontend: HTML, CSS, Bootstrap
+* Database: SQLite (Development), PostgreSQL (Production)
+* Deployment: Render
+
+## 🌐 Live Demo
+
+Coming soon...
+
+## 📂 Project Structure
+
+* `students/` → Core app logic
+* `templates/` → Frontend UI
+* `static/` → CSS, JS, assets
+* `sms_project/` → Main project configuration
+
+## ⚙️ Setup Instructions
+
+1. Clone the repository
+2. Create virtual environment
+3. Install dependencies:
+   pip install -r requirements.txt
+4. Run migrations:
+   python manage.py migrate
+5. Start server:
+   python manage.py runserver
+
+## 📌 Future Improvements
+
+* Real-time chat system
+* AI-based student insights
+* Notification system
+* Role-based access control
+
+## 👨‍💻 Author
+
+Developed by Shabaz(Stark)
+>>>>>>> ddd8ce9c4c8bd5a7cc11b2efed4e84340fc11096
