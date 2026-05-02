@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Sign In — EduTrack{% endblock %}
+{% block auth_content %}
+<style>
+body {
+  display: flex; align-items: center;
+  justify-content: center; min-height: 100vh;
+}
+.login-wrap {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 420px; padding: 20px;
+  animation: loginIn 0.5s cubic-bezier(.4,0,.2,1);
+}
+@keyframes loginIn {
+  from { opacity:0; transform: translateY(24px) scale(0.97); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+.login-card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 42px 38px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.6),
+              inset 0 1px 0 rgba(255,255,255,0.08);
+  position: relative; overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+}
+.login-card::after {
+  content: '';
+  position: absolute; top:-80px; left:50%; transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle,rgba(79,110,247,0.15),transparent 70%);
+  pointer-events: none;
+}
+.login-logo {
+  display: flex; align-items: center;
+  gap: 14px; margin-bottom: 32px; position: relative; z-index: 1;
+}
+.login-mark {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg,#4f6ef7,#8b5cf6);
+  border-radius: 15px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21px; color: white;
+  box-shadow: 0 8px 24px rgba(79,110,247,0.45);
+}
+.login-brand { font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.4px; }
+.login-brand-sub { font-size: 10.5px; color: rgba(255,255,255,0.3); margin-top: 2px; }
+.login-heading { font-size: 20px; font-weight: 800; color: white; margin-bottom: 5px; letter-spacing:-0.4px; position:relative; z-index:1; }
+.login-subtext { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 26px; position:relative;z-index:1;}
+.field-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: rgba(255,255,255,0.4); margin-bottom: 6px; display: block;
+}
+.field-input {
+  width: 100%;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 13.5px; font-family: 'Plus Jakarta Sans',sans-serif;
+  color: white; outline: none; transition: all 0.2s;
+  margin-bottom: 16px;
+}
+.field-input::placeholder { color: rgba(255,255,255,0.2); }
+.field-input:focus {
+  border-color: #4f6ef7;
+  background: rgba(79,110,247,0.1);
+  box-shadow: 0 0 0 3px rgba(79,110,247,0.18);
+}
+.login-btn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg,#4f6ef7,#3d5aed);
+  color: white; border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(79,110,247,0.4);
+  transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 4px;
+}
+.login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(79,110,247,0.55);
+}
+.login-btn:active { transform: translateY(0); }
+.login-hint {
+  text-align: center; font-size: 11px;
+  color: rgba(255,255,255,0.18); margin-top: 18px;
+}
+.login-hint strong { color: rgba(255,255,255,0.3); }
+.login-error {
+  background: rgba(244,63,94,0.1);
+  border: 1px solid rgba(244,63,94,0.2);
+  border-radius: 10px; padding: 11px 14px;
+  font-size: 12.5px; color: #f87171;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+</style>
+
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-mark"><i class="fas fa-graduation-cap"></i></div>
+      <div>
+        <div class="login-brand">EduTrack</div>
+        <div class="login-brand-sub">Student Management System</div>
+      </div>
+    </div>
+
+    <div class="login-heading">Welcome back</div>
+    <div class="login-subtext">Sign in to access your admin dashboard</div>
+
+    {% if messages %}
+      {% for msg in messages %}
+      <div class="login-error">
+        <i class="fas fa-circle-exclamation"></i> {{ msg }}
+      </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" style="position:relative;z-index:1">
+      {% csrf_token %}
+      <label class="field-label">Username</label>
+      <input type="text" name="username" class="field-input"
+             placeholder="Enter username"
+             value="{{ form.username.value|default:'' }}" autofocus>
+
+      <label class="field-label">Password</label>
+      <input type="password" name="password" class="field-input"
+             placeholder="Enter password">
+
+      <button type="submit" class="login-btn">
+        <i class="fas fa-arrow-right-to-bracket"></i> Sign In
+      </button>
+    </form>
+
+    <p class="login-hint">
+      Default: <strong>admin</strong> / <strong>admin123</strong>
+    </p>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — EduTrack{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'student_list' %}" class="btn-glass"><i class="fas fa-arrow-left"></i> Back</a>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <div class="form-glass">
+      <div class="form-section-title">{{ title }}</div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">First Name *</label>
+            {{ form.first_name }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Last Name *</label>
+            {{ form.last_name }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Roll Number *</label>
+            {{ form.roll_number }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Department *</label>
+            {{ form.department }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Year *</label>
+            {{ form.year }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email *</label>
+            {{ form.email }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Phone</label>
+            {{ form.phone }}
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Gender</label>
+            {{ form.gender }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Date of Birth</label>
+            {{ form.date_of_birth }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Status</label>
+            {{ form.status }}
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Photo</label>
+            {{ form.photo }}
+          </div>
+          <div class="col-12">
+            <label class="form-label">Address</label>
+            {{ form.address }}
+          </div>
+        </div>
+        {% if form.errors %}
+        <div class="alert alert-danger mt-3">
+          {% for field in form %}
+            {% for e in field.errors %}
+              <div>{{ field.label }}: {{ e }}</div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div style="display:flex;gap:10px;margin-top:22px">
+          <button type="submit" class="btn-primary-glow">
+            <i class="fas fa-save"></i> {{ action }} Student
+          </button>
+          <a href="{% url 'student_list' %}" class="btn-glass">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

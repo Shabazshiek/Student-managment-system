@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Departments — EduTrack{% endblock %}
+{% block page_title %}Departments{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="form-glass">
+      <div class="form-section-title"><i class="fas fa-plus-circle me-2" style="color:#7b94ff"></i>Add Department</div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label">Department Name *</label>{{ form.name }}</div>
+        <div class="mb-3"><label class="form-label">Code *</label>{{ form.code }}</div>
+        <div class="mb-4"><label class="form-label">Description</label>{{ form.description }}</div>
+        {% if form.errors %}
+        <div class="alert alert-danger mb-3" style="font-size:12px">
+          {% for field in form %}{% for e in field.errors %}{{ field.label }}: {{ e }}<br>{% endfor %}{% endfor %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn-primary-glow w-100" style="justify-content:center">
+          <i class="fas fa-save"></i> Add Department
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="glass-card">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-building"></i></div>
+        <span class="card-head-title">All Departments</span>
+        <span style="font-size:11px;color:var(--text-muted)">{{ departments.count }} total</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Department</th><th>Code</th><th>Students</th><th>Subjects</th><th>Description</th><th></th></tr></thead>
+          <tbody>
+            {% for dept in departments %}
+            <tr>
+              <td style="font-weight:700;color:var(--text-primary)">{{ dept.name }}</td>
+              <td><code>{{ dept.code }}</code></td>
+              <td><span style="background:rgba(79,110,247,0.15);color:#7b94ff;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700">{{ dept.student_count }}</span></td>
+              <td><span style="background:rgba(16,185,129,0.15);color:#34d399;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700">{{ dept.subject_count }}</span></td>
+              <td style="font-size:11.5px;color:var(--text-muted)">{{ dept.description|default:"—"|truncatewords:8 }}</td>
+              <td>
+                <form method="post" action="{% url 'department_delete' dept.pk %}" style="display:inline" onsubmit="return confirm('Delete {{ dept.name }}?')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-danger-glass" style="padding:5px 9px;font-size:11px"><i class="fas fa-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">
+              <div class="empty-state" style="padding:30px">
+                <div class="empty-icon"><i class="fas fa-building"></i></div>
+                <div class="empty-text">No departments yet</div>
+              </div>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

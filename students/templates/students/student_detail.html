@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block title %}{{ student.get_full_name }} — EduTrack{% endblock %}
+{% block page_title %}Student Profile{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'student_edit' student.pk %}" class="btn-primary-glow"><i class="fas fa-edit"></i> Edit</a>
+<a href="{% url 'student_list' %}" class="btn-glass"><i class="fas fa-arrow-left"></i> Back</a>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-4">
+    <div class="glass-card">
+      <div class="profile-hero">
+        <div style="display:flex;align-items:center;gap:16px;position:relative;z-index:1">
+          {% if student.photo %}
+          <img src="{{ student.photo.url }}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.2)">
+          {% else %}
+          <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#4f6ef7,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:white;flex-shrink:0;border:3px solid rgba(255,255,255,0.15)">
+            {{ student.first_name|first }}{{ student.last_name|first }}
+          </div>
+          {% endif %}
+          <div>
+            <div style="font-size:18px;font-weight:800;color:white;letter-spacing:-0.3px">{{ student.get_full_name }}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px">{{ student.roll_number }}</div>
+            <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+              <span class="badge badge-{{ student.status }}">{{ student.get_status_display }}</span>
+              <span class="badge badge-{{ grade }}">Grade {{ grade }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <table style="width:100%;font-size:12.5px">
+          {% for label, value in forloop.parentloop|yesno:"," %}{% endfor %}
+          <tr><td style="color:var(--text-muted);padding:6px 0">Department</td><td style="text-align:right;font-weight:600;color:var(--text-primary)">{{ student.department.name|default:"—" }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Year</td><td style="text-align:right;font-weight:600;color:var(--text-primary)">{{ student.get_year_display }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Gender</td><td style="text-align:right;color:var(--text-secondary)">{{ student.get_gender_display }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Date of Birth</td><td style="text-align:right;color:var(--text-secondary)">{{ student.date_of_birth|default:"—" }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Email</td><td style="text-align:right;font-size:11px;color:var(--text-secondary)">{{ student.email }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Phone</td><td style="text-align:right;color:var(--text-secondary)">{{ student.phone|default:"—" }}</td></tr>
+          <tr><td style="color:var(--text-muted);padding:6px 0">Admitted</td><td style="text-align:right;color:var(--text-secondary)">{{ student.admission_date }}</td></tr>
+        </table>
+        {% if student.address %}
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--glass-border)">
+          <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:5px">Address</div>
+          <div style="font-size:12.5px;color:var(--text-secondary)">{{ student.address }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="row g-3 mb-3">
+      <div class="col-4">
+        <div class="stat-card c-emerald" style="text-align:center;padding:16px">
+          <div class="stat-value" style="font-size:24px;color:{% if att_pct >= 75 %}#34d399{% else %}#f87171{% endif %}">{{ att_pct }}%</div>
+          <div class="stat-label">Attendance</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-card c-brand" style="text-align:center;padding:16px">
+          <div class="stat-value" style="font-size:24px">{{ avg_marks }}</div>
+          <div class="stat-label">Avg Marks</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="stat-card c-violet" style="text-align:center;padding:16px">
+          <div class="stat-value" style="font-size:24px">{{ grade }}</div>
+          <div class="stat-label">Overall Grade</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-card mb-3">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-chart-bar"></i></div>
+        <span class="card-head-title">Academic Marks</span>
+      </div>
+      {% if marks %}
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Subject</th><th>Exam</th><th>Marks</th><th>Max</th><th>%</th><th>Grade</th></tr></thead>
+          <tbody>
+            {% for m in marks %}
+            <tr>
+              <td style="font-weight:600;color:var(--text-primary)">{{ m.subject.name }}</td>
+              <td>{{ m.get_exam_type_display }}</td>
+              <td style="font-weight:700;color:var(--text-primary)">{{ m.marks_obtained }}</td>
+              <td>{{ m.max_marks }}</td>
+              <td>
+                <span style="font-weight:700;color:{% if m.get_percentage >= 75 %}#34d399{% elif m.get_percentage >= 50 %}#fbbf24{% else %}#f87171{% endif %}">{{ m.get_percentage }}%</span>
+              </td>
+              <td><span class="badge badge-{{ m.get_grade }}">{{ m.get_grade }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state" style="padding:30px">
+        <div class="empty-icon"><i class="fas fa-chart-bar"></i></div>
+        <div class="empty-text">No marks recorded yet</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="glass-card">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(16,185,129,0.2);color:#34d399"><i class="fas fa-calendar-check"></i></div>
+        <span class="card-head-title">Recent Attendance</span>
+      </div>
+      {% if attendances %}
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Date</th><th>Subject</th><th>Status</th><th>Remarks</th></tr></thead>
+          <tbody>
+            {% for a in attendances %}
+            <tr>
+              <td style="color:var(--text-primary)">{{ a.date }}</td>
+              <td>{{ a.subject.name|default:"General" }}</td>
+              <td>
+                <span class="{% if a.status == 'present' %}att-present{% elif a.status == 'absent' %}att-absent{% else %}att-leave{% endif %}" style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700">
+                  {{ a.get_status_display }}
+                </span>
+              </td>
+              <td style="font-size:11.5px">{{ a.remarks|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty-state" style="padding:30px">
+        <div class="empty-icon"><i class="fas fa-calendar"></i></div>
+        <div class="empty-text">No attendance records</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+.att-present { background:rgba(16,185,129,0.15); color:#34d399; }
+.att-absent  { background:rgba(244,63,94,0.15);  color:#f87171; }
+.att-leave   { background:rgba(245,158,11,0.15); color:#fbbf24; }
+</style>

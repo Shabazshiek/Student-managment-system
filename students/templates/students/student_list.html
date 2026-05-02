@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Students — EduTrack{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'student_add' %}" class="btn-primary-glow"><i class="fas fa-plus" style="font-size:11px"></i> Add Student</a>
+<a href="{% url 'export_csv' %}" class="btn-glass"><i class="fas fa-download"></i> Export CSV</a>
+{% endblock %}
+
+{% block content %}
+<div class="form-glass mb-4">
+  <form method="get">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">Search</label>
+        {{ form.query }}
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Department</label>
+        {{ form.department }}
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Year</label>
+        {{ form.year }}
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Status</label>
+        {{ form.status }}
+      </div>
+      <div class="col-md-1">
+        <button type="submit" class="btn-primary-glow w-100" style="justify-content:center">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="glass-card">
+  <div class="card-head">
+    <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-users"></i></div>
+    <span class="card-head-title">Student Records</span>
+    <span style="font-size:11px;color:var(--text-muted)">{{ total }} student{{ total|pluralize }}</span>
+    {% if request.GET %}
+    <a href="{% url 'student_list' %}" class="btn-glass" style="font-size:11px">Clear</a>
+    {% endif %}
+  </div>
+  <div style="overflow-x:auto">
+    <table class="glass-table">
+      <thead>
+        <tr><th>Student</th><th>Roll No</th><th>Department</th><th>Year</th><th>Email</th><th>Attendance</th><th>Avg</th><th>Grade</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for s in students %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              {% if s.photo %}
+              <img src="{{ s.photo.url }}" class="avatar" style="object-fit:cover">
+              {% else %}
+              <div class="avatar" style="background:rgba(79,110,247,0.2);color:#7b94ff">{{ s.first_name|first }}{{ s.last_name|first }}</div>
+              {% endif %}
+              <div>
+                <div style="font-weight:600;color:var(--text-primary);font-size:13px">{{ s.get_full_name }}</div>
+                <div style="font-size:11px;color:var(--text-muted)">{{ s.phone|default:"" }}</div>
+              </div>
+            </div>
+          </td>
+          <td><code>{{ s.roll_number }}</code></td>
+          <td>{{ s.department.name|default:"—" }}</td>
+          <td style="color:var(--text-muted)">Year {{ s.year }}</td>
+          <td style="font-size:11.5px;color:var(--text-muted)">{{ s.email }}</td>
+          <td>
+            {% with att=s.get_attendance_percentage %}
+            <span style="font-weight:700;color:{% if att >= 75 %}#34d399{% elif att >= 50 %}#fbbf24{% else %}#f87171{% endif %}">{{ att }}%</span>
+            {% endwith %}
+          </td>
+          <td style="font-weight:600;color:var(--text-primary)">{{ s.get_average_marks }}</td>
+          <td><span class="badge badge-{{ s.get_grade }}">{{ s.get_grade }}</span></td>
+          <td><span class="badge badge-{{ s.status }}">{{ s.get_status_display }}</span></td>
+          <td>
+            <div style="display:flex;gap:5px">
+              <a href="{% url 'student_detail' s.pk %}" class="btn-glass" style="padding:5px 9px;font-size:11px" title="View"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'student_edit' s.pk %}" class="btn-glass" style="padding:5px 9px;font-size:11px" title="Edit"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'student_delete' s.pk %}" class="btn-danger-glass" style="padding:5px 9px;font-size:11px" title="Delete"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="10">
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-user-slash"></i></div>
+            <div class="empty-title">No students found</div>
+            <div class="empty-text">
+              {% if not request.GET %}<a href="{% url 'student_add' %}" style="color:#7b94ff">Add first student</a>{% else %}Try different filters{% endif %}
+            </div>
+          </div>
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

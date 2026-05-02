@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — EduTrack{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'student_add' %}" class="btn-primary-glow">
+  <i class="fas fa-plus" style="font-size:11px"></i> Add Student
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="stat-card c-brand">
+      <div class="stat-icon si-brand"><i class="fas fa-user-graduate"></i></div>
+      <div class="stat-value">{{ total_students }}</div>
+      <div class="stat-label">Total Students</div>
+      <div class="stat-sub">{{ active_students }} active</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card c-emerald">
+      <div class="stat-icon si-emerald"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-value">{{ today_present }}</div>
+      <div class="stat-label">Present Today</div>
+      <div class="stat-sub">marked today</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card c-amber">
+      <div class="stat-icon si-amber"><i class="fas fa-building"></i></div>
+      <div class="stat-value">{{ total_departments }}</div>
+      <div class="stat-label">Departments</div>
+      <div class="stat-sub">{{ total_subjects }} subjects</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card c-violet">
+      <div class="stat-icon si-violet"><i class="fas fa-book-open"></i></div>
+      <div class="stat-value">{{ total_subjects }}</div>
+      <div class="stat-label">Total Subjects</div>
+      <div class="stat-sub">all departments</div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="glass-card" style="height:290px">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-chart-pie"></i></div>
+        <span class="card-head-title">Grade Distribution</span>
+      </div>
+      <div class="card-body" style="height:220px;position:relative">
+        <canvas id="gradeChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="glass-card" style="height:290px">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(16,185,129,0.2);color:#34d399"><i class="fas fa-chart-bar"></i></div>
+        <span class="card-head-title">Students by Department</span>
+      </div>
+      <div class="card-body" style="height:220px;position:relative">
+        <canvas id="deptChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="glass-card" style="height:290px">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(139,92,246,0.2);color:#a78bfa"><i class="fas fa-chart-line"></i></div>
+        <span class="card-head-title">Attendance (7 Days)</span>
+      </div>
+      <div class="card-body" style="height:220px;position:relative">
+        <canvas id="attChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="glass-card">
+  <div class="card-head">
+    <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-users"></i></div>
+    <span class="card-head-title">Recent Students</span>
+    <a href="{% url 'student_list' %}" class="btn-glass ms-auto" style="font-size:11px">View All <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="glass-table">
+      <thead>
+        <tr><th>Student</th><th>Roll No</th><th>Department</th><th>Attendance</th><th>Avg Marks</th><th>Grade</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for s in recent_students %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar" style="background:rgba(79,110,247,0.2);color:#7b94ff">{{ s.first_name|first }}{{ s.last_name|first }}</div>
+              <div>
+                <div style="font-weight:600;color:var(--text-primary);font-size:13px">{{ s.get_full_name }}</div>
+                <div style="font-size:11px;color:var(--text-muted)">{{ s.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td><code>{{ s.roll_number }}</code></td>
+          <td>{{ s.department.name|default:"—" }}</td>
+          <td>
+            {% with att=s.get_attendance_percentage %}
+            <span style="font-weight:700;font-size:13px;color:{% if att >= 75 %}#34d399{% elif att >= 50 %}#fbbf24{% else %}#f87171{% endif %}">{{ att }}%</span>
+            {% endwith %}
+          </td>
+          <td style="font-weight:600;color:var(--text-primary)">{{ s.get_average_marks }}</td>
+          <td><span class="badge badge-{{ s.get_grade }}">{{ s.get_grade }}</span></td>
+          <td><span class="badge badge-{{ s.status }}">{{ s.get_status_display }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-user-graduate"></i></div>
+            <div class="empty-title">No students yet</div>
+            <div class="empty-text"><a href="{% url 'student_add' %}" style="color:#7b94ff">Add your first student</a></div>
+          </div>
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const gradeData = {{ grade_dist|safe }};
+const deptData  = {{ dept_data|safe }};
+const attTrend  = {{ att_trend|safe }};
+
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+Chart.defaults.color = 'rgba(255,255,255,0.35)';
+
+new Chart(document.getElementById('gradeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: Object.keys(gradeData),
+    datasets: [{
+      data: Object.values(gradeData),
+      backgroundColor: ['#10b981','#4f6ef7','#f59e0b','#f97316','#6b7280'],
+      borderWidth: 3, borderColor: 'rgba(255,255,255,0.05)',
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
+    plugins: { legend: { position:'bottom', labels:{ padding:12, font:{size:11}, color:'rgba(255,255,255,0.5)' } } }
+  }
+});
+
+new Chart(document.getElementById('deptChart'), {
+  type: 'bar',
+  data: {
+    labels: deptData.map(d => d.name.length>8 ? d.name.substring(0,8)+'…' : d.name),
+    datasets: [{
+      label: 'Students',
+      data: deptData.map(d => d.student_count),
+      backgroundColor: 'rgba(79,110,247,0.7)',
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false} },
+    scales: {
+      y: { beginAtZero:true, ticks:{stepSize:1,color:'rgba(255,255,255,0.3)'}, grid:{color:'rgba(255,255,255,0.04)'} },
+      x: { grid:{display:false}, ticks:{color:'rgba(255,255,255,0.3)'} }
+    }
+  }
+});
+
+new Chart(document.getElementById('attChart'), {
+  type: 'line',
+  data: {
+    labels: attTrend.map(d => d.date),
+    datasets: [{
+      label: 'Attendance %',
+      data: attTrend.map(d => d.pct),
+      borderColor: '#8b5cf6',
+      backgroundColor: 'rgba(139,92,246,0.1)',
+      tension: 0.4, fill: true,
+      pointBackgroundColor: '#8b5cf6',
+      pointRadius: 4, pointHoverRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false} },
+    scales: {
+      y: { beginAtZero:true, max:100, ticks:{color:'rgba(255,255,255,0.3)'}, grid:{color:'rgba(255,255,255,0.04)'} },
+      x: { grid:{display:false}, ticks:{color:'rgba(255,255,255,0.3)'} }
+    }
+  }
+});
+</script>
+{% endblock %}

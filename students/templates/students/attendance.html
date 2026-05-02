@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Attendance — EduTrack{% endblock %}
+{% block page_title %}Attendance Tracker{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-4">
+  <div class="col-md-3">
+    <div class="stat-card c-emerald">
+      <div class="stat-icon si-emerald"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-value">{{ today_present }}</div>
+      <div class="stat-label">Present Today</div>
+      <div class="stat-sub">out of {{ today_total }} marked</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="stat-card c-brand">
+      <div class="stat-icon si-brand"><i class="fas fa-calendar"></i></div>
+      <div class="stat-value">{{ today_total }}</div>
+      <div class="stat-label">Total Marked</div>
+      <div class="stat-sub">today</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="form-glass">
+      <div class="form-section-title"><i class="fas fa-calendar-check me-2" style="color:#7b94ff"></i>Mark Attendance</div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label">Student *</label>{{ form.student }}</div>
+        <div class="mb-3"><label class="form-label">Date *</label>{{ form.date }}</div>
+        <div class="mb-3"><label class="form-label">Subject</label>{{ form.subject }}</div>
+        <div class="mb-3"><label class="form-label">Status *</label>{{ form.status }}</div>
+        <div class="mb-4"><label class="form-label">Remarks</label>{{ form.remarks }}</div>
+        {% if form.errors %}
+        <div class="alert alert-danger mb-3" style="font-size:12px">
+          {% for field in form %}{% for e in field.errors %}{{ field.label }}: {{ e }}<br>{% endfor %}{% endfor %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn-primary-glow w-100" style="justify-content:center">
+          <i class="fas fa-check"></i> Mark Attendance
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="glass-card mb-3">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-list"></i></div>
+        <span class="card-head-title">Recent Records</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Student</th><th>Date</th><th>Subject</th><th>Status</th><th>Marked By</th></tr></thead>
+          <tbody>
+            {% for a in attendances %}
+            <tr>
+              <td>
+                <div style="font-weight:600;color:var(--text-primary)">{{ a.student.get_full_name }}</div>
+                <div style="font-size:11px;color:var(--text-muted)">{{ a.student.roll_number }}</div>
+              </td>
+              <td>{{ a.date }}</td>
+              <td>{{ a.subject.name|default:"General" }}</td>
+              <td>
+                <span style="display:inline-block;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:700;
+                  background:{% if a.status == 'present' %}rgba(16,185,129,0.15){% elif a.status == 'absent' %}rgba(244,63,94,0.15){% else %}rgba(245,158,11,0.15){% endif %};
+                  color:{% if a.status == 'present' %}#34d399{% elif a.status == 'absent' %}#f87171{% else %}#fbbf24{% endif %}">
+                  {{ a.get_status_display }}
+                </span>
+              </td>
+              <td style="color:var(--text-muted)">{{ a.marked_by.username|default:"—" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">
+              <div class="empty-state" style="padding:30px">
+                <div class="empty-icon"><i class="fas fa-calendar"></i></div>
+                <div class="empty-text">No attendance records yet</div>
+              </div>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

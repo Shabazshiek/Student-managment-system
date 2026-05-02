@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Reports — EduTrack{% endblock %}
+{% block page_title %}Reports{% endblock %}
+{% block topbar_actions %}
+<a href="{% url 'export_csv' %}" class="btn-primary-glow"><i class="fas fa-download"></i> Export CSV</a>
+{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+  <div class="card-head">
+    <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-file-alt"></i></div>
+    <span class="card-head-title">Complete Student Report</span>
+    <a href="{% url 'export_csv' %}" class="btn-glass ms-auto" style="font-size:11px"><i class="fas fa-download"></i> Download CSV</a>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="glass-table">
+      <thead>
+        <tr><th>Student</th><th>Roll No</th><th>Department</th><th>Year</th><th>Status</th><th>Attendance</th><th>Avg Marks</th><th>Grade</th></tr>
+      </thead>
+      <tbody>
+        {% for item in report_data %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="avatar" style="background:rgba(79,110,247,0.2);color:#7b94ff;font-size:11px">
+                {{ item.student.first_name|first }}{{ item.student.last_name|first }}
+              </div>
+              <a href="{% url 'student_detail' item.student.pk %}" style="font-weight:600;color:var(--text-primary);text-decoration:none;font-size:13px">
+                {{ item.student.get_full_name }}
+              </a>
+            </div>
+          </td>
+          <td><code>{{ item.student.roll_number }}</code></td>
+          <td>{{ item.student.department.name|default:"—" }}</td>
+          <td style="color:var(--text-muted)">Year {{ item.student.year }}</td>
+          <td><span class="badge badge-{{ item.student.status }}">{{ item.student.get_status_display }}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1;background:rgba(255,255,255,0.07);border-radius:20px;height:5px;min-width:50px;overflow:hidden">
+                <div style="width:{{ item.att_pct }}%;height:100%;background:{% if item.att_pct >= 75 %}#34d399{% elif item.att_pct >= 50 %}#fbbf24{% else %}#f87171{% endif %};border-radius:20px"></div>
+              </div>
+              <span style="font-size:12px;font-weight:700;min-width:32px;color:{% if item.att_pct >= 75 %}#34d399{% elif item.att_pct >= 50 %}#fbbf24{% else %}#f87171{% endif %}">{{ item.att_pct }}%</span>
+            </div>
+          </td>
+          <td style="font-weight:700;color:var(--text-primary)">{{ item.avg_marks }}</td>
+          <td><span class="badge badge-{{ item.grade }}">{{ item.grade }}</span></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="empty-title">No data to report</div>
+            <div class="empty-text">Add students to generate reports</div>
+          </div>
+        </td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

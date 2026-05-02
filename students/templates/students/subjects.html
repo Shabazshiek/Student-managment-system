@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Subjects — EduTrack{% endblock %}
+{% block page_title %}Subjects{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="form-glass">
+      <div class="form-section-title"><i class="fas fa-plus-circle me-2" style="color:#7b94ff"></i>Add Subject</div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label">Subject Name *</label>{{ form.name }}</div>
+        <div class="mb-3"><label class="form-label">Code *</label>{{ form.code }}</div>
+        <div class="mb-3"><label class="form-label">Department *</label>{{ form.department }}</div>
+        <div class="row g-2 mb-4">
+          <div class="col-6"><label class="form-label">Max Marks</label>{{ form.max_marks }}</div>
+          <div class="col-6"><label class="form-label">Credits</label>{{ form.credits }}</div>
+        </div>
+        {% if form.errors %}
+        <div class="alert alert-danger mb-3" style="font-size:12px">
+          {% for field in form %}{% for e in field.errors %}{{ field.label }}: {{ e }}<br>{% endfor %}{% endfor %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn-primary-glow w-100" style="justify-content:center">
+          <i class="fas fa-save"></i> Add Subject
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="glass-card">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(16,185,129,0.2);color:#34d399"><i class="fas fa-book-open"></i></div>
+        <span class="card-head-title">All Subjects</span>
+        <span style="font-size:11px;color:var(--text-muted)">{{ subjects.count }} total</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Subject</th><th>Code</th><th>Department</th><th>Max Marks</th><th>Credits</th></tr></thead>
+          <tbody>
+            {% for sub in subjects %}
+            <tr>
+              <td style="font-weight:600;color:var(--text-primary)">{{ sub.name }}</td>
+              <td><code>{{ sub.code }}</code></td>
+              <td>{{ sub.department.name }}</td>
+              <td>{{ sub.max_marks }}</td>
+              <td><span style="background:rgba(6,182,212,0.15);color:#22d3ee;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700">{{ sub.credits }} cr</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">
+              <div class="empty-state" style="padding:30px">
+                <div class="empty-icon"><i class="fas fa-book-open"></i></div>
+                <div class="empty-text">No subjects yet. Add departments first.</div>
+              </div>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

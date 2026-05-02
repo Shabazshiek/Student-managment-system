@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Marks & Grades — EduTrack{% endblock %}
+{% block page_title %}Marks & Grades{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="form-glass">
+      <div class="form-section-title"><i class="fas fa-pen me-2" style="color:#7b94ff"></i>Add / Update Marks</div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label">Student *</label>{{ form.student }}</div>
+        <div class="mb-3"><label class="form-label">Subject *</label>{{ form.subject }}</div>
+        <div class="mb-3"><label class="form-label">Exam Type *</label>{{ form.exam_type }}</div>
+        <div class="row g-2 mb-3">
+          <div class="col-6"><label class="form-label">Marks Obtained</label>{{ form.marks_obtained }}</div>
+          <div class="col-6"><label class="form-label">Max Marks</label>{{ form.max_marks }}</div>
+        </div>
+        <div class="mb-3"><label class="form-label">Exam Date</label>{{ form.exam_date }}</div>
+        <div class="mb-4"><label class="form-label">Remarks</label>{{ form.remarks }}</div>
+        {% if form.errors %}
+        <div class="alert alert-danger mb-3" style="font-size:12px">
+          {% for field in form %}{% for e in field.errors %}{{ field.label }}: {{ e }}<br>{% endfor %}{% endfor %}
+        </div>
+        {% endif %}
+        <button type="submit" class="btn-primary-glow w-100" style="justify-content:center">
+          <i class="fas fa-save"></i> Save Marks
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <div class="glass-card">
+      <div class="card-head">
+        <div class="card-head-ico" style="background:rgba(79,110,247,0.2);color:#7b94ff"><i class="fas fa-list"></i></div>
+        <span class="card-head-title">All Marks Records</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="glass-table">
+          <thead><tr><th>Student</th><th>Subject</th><th>Exam</th><th>Marks</th><th>Max</th><th>%</th><th>Grade</th></tr></thead>
+          <tbody>
+            {% for m in marks %}
+            <tr>
+              <td>
+                <div style="font-weight:600;color:var(--text-primary)">{{ m.student.get_full_name }}</div>
+                <div style="font-size:11px;color:var(--text-muted)">{{ m.student.roll_number }}</div>
+              </td>
+              <td>{{ m.subject.name }}</td>
+              <td><span style="background:rgba(255,255,255,0.07);padding:2px 8px;border-radius:5px;font-size:10.5px">{{ m.get_exam_type_display }}</span></td>
+              <td style="font-weight:700;color:var(--text-primary)">{{ m.marks_obtained }}</td>
+              <td>{{ m.max_marks }}</td>
+              <td><span style="font-weight:700;color:{% if m.get_percentage >= 75 %}#34d399{% elif m.get_percentage >= 50 %}#fbbf24{% else %}#f87171{% endif %}">{{ m.get_percentage }}%</span></td>
+              <td><span class="badge badge-{{ m.get_grade }}">{{ m.get_grade }}</span></td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">
+              <div class="empty-state" style="padding:30px">
+                <div class="empty-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="empty-text">No marks recorded yet</div>
+              </div>
+            </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
