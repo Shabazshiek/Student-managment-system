@@ -1,54 +1,146 @@
-<<<<<<< HEAD
+<div align="center">
+
+<img src="https://img.shields.io/badge/EduTrack-Student%20Management%20System-6366f1?style=for-the-badge&logo=graduation-cap&logoColor=white" alt="EduTrack Banner"/>
+
 # 🎓 EduTrack — Student Management System
 
-A full-stack Django web application for managing student records, attendance, marks, departments, and reports.
+**A full-stack Django web application for managing student records, attendance, marks, departments, and academic reports — with a clean dark-themed UI.**
+
+[![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-Visit%20App-6366f1?style=for-the-badge)](https://student-managment-system-2-6qlo.onrender.com)
+[![Django](https://img.shields.io/badge/Django-4.2-092E20?style=for-the-badge&logo=django&logoColor=white)](https://djangoproject.com)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com)
+
+</div>
 
 ---
 
-## 🚀 Quick Start (Automatic)
+## 🌐 Live Demo
 
+> **URL:** [https://student-managment-system-2-6qlo.onrender.com](https://student-managment-system-2-6qlo.onrender.com)
+>
+> **Default Credentials:**
+> | Field | Value |
+> |-------|-------|
+> | Username | `admin` |
+> | Password | `admin123` |
+
+> ⚠️ *Hosted on Render's free tier — may take ~30 seconds to wake up on first load.*
+
+---
+
+## 📸 Screenshots
+
+### 🔐 Login Page
+> Sleek dark-themed login with EduTrack branding and default credentials hint.
+
+![Login Page](screenshots/login.png)
+
+---
+
+### 📊 Admin Dashboard
+> Stats overview with live Chart.js graphs — Grade Distribution, Students by Department, and 7-Day Attendance Trend.
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+### 👨‍🎓 Add New Student
+> Comprehensive student registration form — name, roll number, department, year, photo upload, and more.
+
+![Add Student](screenshots/newstudent.png)
+
+---
+
+### 📅 Attendance Tracker
+> Mark and track student attendance per subject and date with recent records table.
+
+![Attendance Tracker](screenshots/attendencetracker.png)
+
+---
+
+### 🏫 Department Management
+> Create and manage academic departments with live student and subject counts.
+
+![Departments](screenshots/department.png)
+
+---
+
+## ✨ Features
+
+| Module | What It Does |
+|--------|-------------|
+| 🔐 **Auth System** | Secure Django login — admin-only access |
+| 📊 **Dashboard** | Stats cards + Chart.js graphs (grades, departments, 7-day attendance trend) |
+| 👨‍🎓 **Student CRUD** | Add, edit, view, delete students with photo upload support |
+| 🔍 **Search & Filter** | Filter by name, roll number, department, year, or status |
+| 📅 **Attendance** | Mark present/absent/leave per student, subject, and date |
+| 📝 **Marks & Grades** | Per-subject marks with auto grade calculation (A+/A/B/C/D/F) |
+| 🏫 **Departments** | Create and manage academic departments |
+| 📚 **Subjects** | Assign subjects to departments with credit management |
+| 📄 **Reports** | Full student report with attendance bars and grade summary |
+| 📥 **CSV Export** | Download all student data as a CSV file |
+| 🛡️ **Django Admin** | Full admin panel at `/admin/` |
+
+---
+
+## 🔧 Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Python 3.x + Django 4.2 |
+| **Frontend** | HTML5, CSS3, Custom Dark Theme, Chart.js |
+| **Database** | SQLite (dev) / PostgreSQL (prod) |
+| **Auth** | Django built-in authentication |
+| **Deployment** | Render (cloud hosting) |
+
+---
+
+## 🚀 Local Setup
+
+### Prerequisites
+- Python 3.8+
+- pip
+
+### Quick Start (One Command)
 ```bash
 python setup.py
 python manage.py runserver
 ```
+Then open **http://127.0.0.1:8000/** and login with `admin / admin123`
 
-Then open: **http://127.0.0.1:8000/**  
-Login: **admin** / **admin123**
+### Manual Setup
 
----
-
-## 🛠️ Manual Setup
-
-### 1. Requirements
-- Python 3.8 or higher
-- pip
-
-### 2. Install Dependencies
 ```bash
+# 1. Clone the repository
+git clone https://github.com/Shabazshiek/student-management-system.git
+cd student-management-system
+
+# 2. Install dependencies
 pip install -r requirements.txt
-```
 
-### 3. Database Setup
-```bash
+# 3. Apply migrations
 python manage.py makemigrations
 python manage.py migrate
-```
 
-### 4. Create Admin User
-```bash
-python manage.py createsuperuser
-```
-Or use the seed command which auto-creates `admin / admin123`:
-```bash
+# 4. Seed sample data (auto-creates admin/admin123)
 python manage.py seed_data
-```
 
-### 5. Run the Server
-```bash
+# 5. Run the server
 python manage.py runserver
 ```
 
-Visit **http://127.0.0.1:8000/**
+---
+
+## 🗄️ Database Models
+
+```
+Student      → roll_number, name, email, phone, gender, dob, department, year, photo, status
+Department   → name, code, description
+Subject      → name, code, department, max_marks, credits
+Attendance   → student, date, status (present/absent/leave), subject, marked_by
+Marks        → student, subject, exam_type, marks_obtained, max_marks, exam_date
+```
 
 ---
 
@@ -58,84 +150,54 @@ Visit **http://127.0.0.1:8000/**
 sms/
 ├── manage.py                   # Django management script
 ├── setup.py                    # One-click setup
-├── requirements.txt            # Python dependencies
-├── db.sqlite3                  # SQLite database (auto-created)
-│
+├── requirements.txt
 ├── sms_project/                # Django project config
-│   ├── settings.py             # Settings (DB, apps, templates)
-│   ├── urls.py                 # Root URL config
+│   ├── settings.py
+│   ├── urls.py
 │   └── wsgi.py
-│
-├── students/                   # Main application
-│   ├── models.py               # DB models: Student, Department, Subject, Attendance, Marks
-│   ├── views.py                # All page views and logic
-│   ├── urls.py                 # App URL routes
-│   ├── forms.py                # Django forms
-│   ├── admin.py                # Django admin configuration
-│   ├── context_processors.py   # Global template variables
-│   ├── management/
-│   │   └── commands/
-│   │       └── seed_data.py    # Sample data seeder
-│   └── templates/
-│       └── students/
-│           ├── login.html
-│           ├── dashboard.html
-│           ├── student_list.html
-│           ├── student_form.html
-│           ├── student_detail.html
-│           ├── confirm_delete.html
-│           ├── attendance.html
-│           ├── marks.html
-│           ├── departments.html
-│           ├── subjects.html
-│           └── reports.html
-│
-└── templates/
-    └── base.html               # Shared layout with sidebar
+└── students/                   # Main application
+    ├── models.py               # All DB models
+    ├── views.py                # Page views & logic
+    ├── urls.py                 # URL routes
+    ├── forms.py                # Django forms
+    ├── admin.py
+    ├── context_processors.py
+    ├── management/commands/
+    │   └── seed_data.py        # Sample data seeder
+    └── templates/students/
+        ├── dashboard.html
+        ├── student_list.html
+        ├── attendance.html
+        ├── marks.html
+        ├── departments.html
+        └── reports.html
 ```
 
 ---
 
-## ✨ Features
+## 📜 URL Routes
 
-| Feature | Details |
-|---|---|
-| **Login System** | Django auth, admin-only access |
-| **Dashboard** | Stats cards, Chart.js graphs (grades, departments, attendance trend) |
-| **Student CRUD** | Add, edit, view, delete students with photo upload |
-| **Search & Filter** | By name, roll number, department, year, status |
-| **Attendance** | Mark present/absent per student/subject/date, summary stats |
-| **Marks & Grades** | Per-subject marks, auto grade (A+/A/B/C/D/F), percentage |
-| **Departments** | Create and manage departments |
-| **Subjects** | Assign subjects to departments |
-| **Reports** | Full student report with attendance bar and grade |
-| **CSV Export** | Download all student data as CSV |
-| **Django Admin** | Full admin panel at /admin/ |
-
----
-
-## 🗄️ Database Models
-
-- **Student** — roll_number, name, email, phone, gender, dob, department, year, address, photo, status
-- **Department** — name, code, description
-- **Subject** — name, code, department, max_marks, credits
-- **Attendance** — student, date, status (present/absent/leave), subject, marked_by
-- **Marks** — student, subject, exam_type, marks_obtained, max_marks, exam_date
+| URL | Page |
+|-----|------|
+| `/` | Dashboard |
+| `/login/` | Login |
+| `/students/` | Student List |
+| `/students/add/` | Add Student |
+| `/students/<id>/` | Student Profile |
+| `/students/<id>/edit/` | Edit Student |
+| `/attendance/` | Attendance Tracker |
+| `/marks/` | Marks & Grades |
+| `/departments/` | Departments |
+| `/subjects/` | Subjects |
+| `/reports/` | Reports |
+| `/reports/export/` | CSV Export |
+| `/admin/` | Django Admin |
 
 ---
 
-## 🔧 Tech Stack
+## 🔁 Switch to PostgreSQL (Production)
 
-- **Backend:** Python 3.x + Django 4.2
-- **Frontend:** HTML5, CSS3, Bootstrap 5, Chart.js
-- **Database:** SQLite (default) — switch to PostgreSQL in settings.py
-- **Auth:** Django built-in authentication
-
----
-
-## 🔁 Switch to PostgreSQL
-
-In `sms_project/settings.py`, replace the DATABASES section:
+In `sms_project/settings.py`:
 
 ```python
 DATABASES = {
@@ -150,83 +212,32 @@ DATABASES = {
 }
 ```
 
-Then: `pip install psycopg2-binary`
+```bash
+pip install psycopg2-binary
+```
 
 ---
 
-## 📜 URL Routes
+## 🗺️ Planned Improvements
 
-| URL | View |
-|---|---|
-| `/` | Dashboard |
-| `/login/` | Login |
-| `/students/` | Student list |
-| `/students/add/` | Add student |
-| `/students/<id>/` | Student profile |
-| `/students/<id>/edit/` | Edit student |
-| `/students/<id>/delete/` | Delete student |
-| `/attendance/` | Attendance tracker |
-| `/marks/` | Marks & Grades |
-| `/departments/` | Departments |
-| `/subjects/` | Subjects |
-| `/reports/` | Reports |
-| `/reports/export/` | CSV export |
-| `/admin/` | Django Admin |
-=======
-# Student-managment-system
-A full-stack Django-based Student Management System with authentication, dashboard, and real-time data management features. Designed for efficient student, attendance, and academic record handling.
+- [ ] Role-based access control (Teacher / Student / Admin)
+- [ ] AI-based student performance insights
+- [ ] Real-time notification system
+- [ ] REST API with Django REST Framework
+- [ ] Mobile-responsive improvements
 
-# 🎓 Student Management System
-
-A full-stack web application built using Django that allows efficient management of student records, attendance, marks, and academic data through a clean and interactive dashboard.
-
-## 🚀 Features
-
-* 🔐 User Authentication (Login/Logout)
-* 📊 Admin Dashboard
-* 👨‍🎓 Student Management (Add, Update, Delete)
-* 🏫 Department & Subject Management
-* 📅 Attendance Tracking
-* 📝 Marks & Reports System
-* 📁 Organized Database Structure
-
-## 🛠️ Tech Stack
-
-* Backend: Django (Python)
-* Frontend: HTML, CSS, Bootstrap
-* Database: SQLite (Development), PostgreSQL (Production)
-* Deployment: Render
-
-## 🌐 Live Demo
-
-Coming soon...
-
-## 📂 Project Structure
-
-* `students/` → Core app logic
-* `templates/` → Frontend UI
-* `static/` → CSS, JS, assets
-* `sms_project/` → Main project configuration
-
-## ⚙️ Setup Instructions
-
-1. Clone the repository
-2. Create virtual environment
-3. Install dependencies:
-   pip install -r requirements.txt
-4. Run migrations:
-   python manage.py migrate
-5. Start server:
-   python manage.py runserver
-
-## 📌 Future Improvements
-
-* Real-time chat system
-* AI-based student insights
-* Notification system
-* Role-based access control
+---
 
 ## 👨‍💻 Author
 
-Developed by Shabaz(Stark)
->>>>>>> ddd8ce9c4c8bd5a7cc11b2efed4e84340fc11096
+**Shabaz (Stark)**  
+Computer Science Student | Django Developer | AI Enthusiast
+
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=flat-square&logo=github)](https://github.com/Shabazshiek)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/sharfuddin-shaik/)
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ using Django & Custom CSS · Deployed on Render</sub>
+</div>
