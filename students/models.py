@@ -30,7 +30,7 @@ class Student(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='students')
     year = models.IntegerField(choices=YEAR_CHOICES, default=1)
     address = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='student_photos/', null=True, blank=True)
+    photo = models.FileField(upload_to='students/', null=True, blank=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
     admission_date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
