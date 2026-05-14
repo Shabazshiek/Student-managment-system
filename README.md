@@ -238,6 +238,12 @@ Computer Science Student | Django Developer | AI Enthusiast
 
 ---
 
+⭐ Support
+
+If you like this project, consider giving it a ⭐ on GitHub 😄
+
+---
+
 <div align="center">
   <sub>Built with ❤️ using Django & Custom CSS · Deployed on Render</sub>
 </div>
